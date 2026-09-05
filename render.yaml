@@ -1,0 +1,33 @@
+# Render blueprint for the ProjectMentor AI backend.
+# In the Render dashboard: New > Blueprint, point it at this repo, and Render
+# reads this file. You still set the secret env vars (marked sync:false) in
+# the dashboard so they never live in git.
+services:
+  - type: web
+    name: projectmentor-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # Set these two in the Render dashboard (Environment tab):
+      - key: JWT_SECRET
+        sync: false          # paste a long random string
+      - key: CLIENT_ORIGIN
+        sync: false          # your Vercel URL, e.g. https://projectmentor.vercel.app
+      - key: MONGODB_URI
+        sync: false          # your MongoDB Atlas connection string (optional)
+      - key: GEMINI_API_KEY
+        sync: false          # your Google Gemini key (optional)
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
+      - key: AI_PROVIDER
+        value: gemini
+      - key: DISABLE_RATE_LIMIT
+        value: "true"
